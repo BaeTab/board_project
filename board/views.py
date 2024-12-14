@@ -4,11 +4,60 @@ from django.contrib import messages
 from .models import Post, Comment, Like
 from django.contrib.auth.models import User
 from .forms import PostForm, CommentForm
+from django.db.models import Count
+import random
+import requests
+from datetime import datetime, timedelta
+
+def get_random_quote():
+    quotes = [
+        {"text": "삶이 있는 한 희망은 있다.", "author": "키케로"},
+        {"text": "산다는 것, 그것은 치열한 전투이다.", "author": "로망로랑"},
+        {"text": "하루에 3시간을 걸으면 7년 후에 지구를 한바퀴 돌 수 있다.", "author": "사무엘존슨"},
+        {"text": "언제나 현재에 집중할 수 있다면 행복할 것이다.", "author": "파울로 코엘료"},
+        {"text": "진정으로 웃으려면 고통을 참아야 하며, 나아가 고통을 즐길 줄 알아야 한다.", "author": "찰리 채플린"},
+    ]
+    return random.choice(quotes)
 
 @login_required
 def post_list(request):
+    # 기본 게시글 목록 (최신순)
     posts = Post.objects.all().order_by('-created_at')
-    return render(request, 'board/post_list.html', {'posts': posts})
+    
+    # 인기 게시글 (좋아요 많은 순)
+    popular_posts = Post.objects.annotate(
+        like_count=Count('likes')
+    ).order_by('-like_count')[:5]
+    
+    # 최근 24시간 내 가장 활발한 게시글 (댓글 많은 순)
+    recent_active = Post.objects.filter(
+        created_at__gte=datetime.now() - timedelta(days=1)
+    ).annotate(
+        comment_count=Count('comments')
+    ).order_by('-comment_count')[:5]
+    
+    # 오늘의 명언
+    quote = get_random_quote()
+    
+    # 날씨 정보 가져오기 (서울 기준)
+    weather_data = None
+    try:
+        weather_api_key = "13505764fceb0a3c50a7516c046ff0ac"  # OpenWeatherMap API 키
+        weather_url = f"http://api.openweathermap.org/data/2.5/weather?q=Seoul&appid={weather_api_key}&units=metric&lang=kr"
+        response = requests.get(weather_url)
+        if response.status_code == 200:
+            weather_data = response.json()
+    except:
+        weather_data = None
+    
+    context = {
+        'posts': posts,
+        'popular_posts': popular_posts,
+        'recent_active': recent_active,
+        'quote': quote,
+        'weather': weather_data,
+    }
+    return render(request, 'board/post_list.html', context)
 
 @login_required
 def post_detail(request, pk):

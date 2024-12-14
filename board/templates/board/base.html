@@ -41,6 +41,7 @@
                     <a class="nav-item nav-link" href="{% url 'post_new' %}">글쓰기</a>
                     {% if user.username == 'bhwoo48' %}
                         <a class="nav-item nav-link" href="{% url 'admin:index' %}">관리자페이지</a>
+                        <a class="nav-item nav-link" href="{% url 'pending_users' %}">회원승인</a>
                     {% endif %}
                     <form action="{% url 'logout' %}" method="post" style="display: inline;" class="nav-item">
                         {% csrf_token %}

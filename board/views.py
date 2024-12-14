@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Post, Comment, Like
+from .models import Post, Comment, Like, UserProfile
 from django.contrib.auth.models import User
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, CustomUserCreationForm
 from django.db.models import Count
 import random
 import requests
 from datetime import timedelta
 from django.utils import timezone
+from django.contrib.auth.decorators import user_passes_test
 
 def get_random_quote():
     quotes = [
@@ -148,3 +149,31 @@ def dashboard(request):
         'total_comments': total_comments,
     }
     return render(request, 'board/dashboard.html', context)
+
+def signup(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            UserProfile.objects.create(user=user)
+            messages.success(request, '회원가입이 완료되었습니다. 관리자의 승인을 기다려주세요.')
+            return redirect('login')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'registration/signup.html', {'form': form})
+
+@user_passes_test(lambda u: u.is_superuser)
+def pending_users(request):
+    pending_profiles = UserProfile.objects.filter(is_approved=False, user__is_active=False)
+    return render(request, 'board/pending_users.html', {'pending_profiles': pending_profiles})
+
+@user_passes_test(lambda u: u.is_superuser)
+def approve_user(request, user_id):
+    user_profile = get_object_or_404(UserProfile, user_id=user_id)
+    user = user_profile.user
+    user.is_active = True
+    user.save()
+    user_profile.is_approved = True
+    user_profile.save()
+    messages.success(request, f'사용자 {user.username}이(가) 승인되었습니다.')
+    return redirect('pending_users')

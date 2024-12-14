@@ -30,3 +30,11 @@ class Like(models.Model):
 
     class Meta:
         unique_together = ('post', 'user')
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_approved = models.BooleanField(default=False)
+    signup_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.username}'s profile"

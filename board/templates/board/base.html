@@ -15,7 +15,7 @@
                     {% if user.username == 'bhwoo48' %}
                         <a class="nav-item nav-link" href="{% url 'admin:index' %}">관리자페이지</a>
                     {% endif %}
-                    <a class="nav-item nav-link" href="{% url 'logout' %}">로그아웃</a>
+                        <a class="nav-item nav-link" href="{% url 'logout' %}">로그아웃</a>
                 {% else %}
                     <a class="nav-item nav-link" href="{% url 'login' %}">로그인</a>
                 {% endif %}

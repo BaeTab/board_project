@@ -39,11 +39,11 @@ def post_list(request):
     # 오늘의 명언
     quote = get_random_quote()
     
-    # 날씨 정보 가져오기 (서울 기준)
+    # 날씨 정보 가져오기 (서귀포시 기준)
     weather_data = None
     try:
         weather_api_key = "13505764fceb0a3c50a7516c046ff0ac"  # OpenWeatherMap API 키
-        weather_url = f"http://api.openweathermap.org/data/2.5/weather?q=Seoul&appid={weather_api_key}&units=metric&lang=kr"
+        weather_url = f"http://api.openweathermap.org/data/2.5/weather?q=Seogwipo&appid={weather_api_key}&units=metric&lang=kr"
         response = requests.get(weather_url)
         if response.status_code == 200:
             weather_data = response.json()

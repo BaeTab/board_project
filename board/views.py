@@ -8,6 +8,8 @@ from django.db.models import Count
 import random
 import requests
 from datetime import datetime, timedelta
+from django.utils import timezone
+import pytz
 
 def get_random_quote():
     quotes = [
@@ -19,9 +21,14 @@ def get_random_quote():
     ]
     return random.choice(quotes)
 
+def get_korea_time():
+    korea_tz = pytz.timezone('Asia/Seoul')
+    return timezone.now().astimezone(korea_tz)
+
 @login_required
 def post_list(request):
     # 기본 게시글 목록 (최신순)
+    current_time = get_korea_time()
     posts = Post.objects.all().order_by('-created_at')
     
     # 인기 게시글 (좋아요 많은 순)
@@ -31,7 +38,7 @@ def post_list(request):
     
     # 최근 24시간 내 가장 활발한 게시글 (댓글 많은 순)
     recent_active = Post.objects.filter(
-        created_at__gte=datetime.now() - timedelta(days=1)
+        created_at__gte=current_time - timedelta(days=1)
     ).annotate(
         comment_count=Count('comments')
     ).order_by('-comment_count')[:5]
@@ -86,6 +93,7 @@ def post_new(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
+            post.created_at = get_korea_time()
             post.save()
             return redirect('post_detail', pk=post.pk)
     else:
@@ -103,6 +111,7 @@ def post_edit(request, pk):
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
             post = form.save(commit=False)
+            post.created_at = get_korea_time()
             post.save()
             return redirect('post_detail', pk=post.pk)
     else:

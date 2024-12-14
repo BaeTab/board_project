@@ -44,7 +44,7 @@ def post_list(request):
     weather_data = None
     try:
         weather_api_key = "13505764fceb0a3c50a7516c046ff0ac"
-        weather_url = f"http://api.openweathermap.org/data/2.5/weather?q=Seogwipo&appid={weather_api_key}&units=metric&lang=kr"
+        weather_url = f"http://api.openweathermap.org/data/2.5/weather?q=jejudo&appid={weather_api_key}&units=metric&lang=kr"
         response = requests.get(weather_url)
         if response.status_code == 200:
             weather_data = response.json()

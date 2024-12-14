@@ -75,15 +75,20 @@ def post_list(request):
     # 오늘의 명언
     quote = get_random_quote()
     
-    # 날씨 정보 가져오기 (서귀포시 기준)
+    # 날씨 정보 가져오기 (제주시 기준)
     weather_data = None
     try:
         weather_api_key = "13505764fceb0a3c50a7516c046ff0ac"
-        weather_url = f"http://api.openweathermap.org/data/2.5/weather?q=jejucity&appid={weather_api_key}&units=metric&lang=kr"
-        response = requests.get(weather_url)
-        if response.status_code == 200:
-            weather_data = response.json()
-    except:
+        weather_url = f"http://api.openweathermap.org/data/2.5/weather?q=Jeju-do&appid={weather_api_key}&units=metric&lang=kr"
+        response = requests.get(weather_url, timeout=5)
+        response.raise_for_status()  # HTTP 오류 발생 시 예외 발생
+        weather_data = response.json()
+        print("Weather API Response:", weather_data)  # 디버깅을 위한 출력
+    except requests.exceptions.RequestException as e:
+        print(f"Weather API Request Error: {e}")
+        weather_data = None
+    except ValueError as e:
+        print(f"Weather API JSON Parsing Error: {e}")
         weather_data = None
     
     context = {

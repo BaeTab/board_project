@@ -16,6 +16,15 @@
                     <p>습도: {{ weather.main.humidity }}%</p>
                 </div>
             </div>
+            {% else %}
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-white">
+                    <i class="fas fa-exclamation-triangle"></i> 날씨 정보 unavailable
+                </div>
+                <div class="card-body text-center">
+                    <p>현재 날씨 정보를 불러올 수 없습니다.</p>
+                </div>
+            </div>
             {% endif %}
 
             <div class="card mb-4">

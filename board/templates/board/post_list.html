@@ -43,7 +43,7 @@
                                 <p class="card-text">
                                     <small class="text-muted">
                                         작성자: {{ post.author }} | 
-                                        작성일: {{ post.created_at|date:"Y-m-d H:i" }} |
+                                        작성일: {{ post.created_at|date:"Y-m-d H:i:s" }} |
                                         좋아요: {{ post.likes.count }} |
                                         댓글: {{ post.comments.count }}
                                     </small>

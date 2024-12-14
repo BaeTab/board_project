@@ -76,3 +76,25 @@ def like_post(request, pk):
     if not created:
         like.delete()
     return redirect('post_detail', pk=pk)
+
+@login_required
+def dashboard(request):
+    user = request.user
+    # 사용자의 최근 게시글
+    user_posts = Post.objects.filter(author=user).order_by('-created_at')[:5]
+    # 받은 좋아요 수
+    total_likes = Like.objects.filter(post__author=user).count()
+    # 작성한 댓글 수
+    user_comments = Comment.objects.filter(author=user).count()
+    # 전체 통계
+    total_posts = Post.objects.count()
+    total_comments = Comment.objects.count()
+    
+    context = {
+        'user_posts': user_posts,
+        'total_likes': total_likes,
+        'user_comments': user_comments,
+        'total_posts': total_posts,
+        'total_comments': total_comments,
+    }
+    return render(request, 'board/dashboard.html', context)

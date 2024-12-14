@@ -1,0 +1,74 @@
+{% extends 'board/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">{{ user.username }}님의 대시보드</h1>
+
+    <!-- 통계 카드 -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">받은 좋아요</h5>
+                    <p class="card-text display-4">{{ total_likes }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">작성한 댓글</h5>
+                    <p class="card-text display-4">{{ user_comments }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">전체 게시글</h5>
+                    <p class="card-text display-4">{{ total_posts }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 최근 게시글 -->
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5 class="card-title mb-0">최근 작성한 게시글</h5>
+        </div>
+        <div class="card-body">
+            {% if user_posts %}
+                <div class="list-group">
+                    {% for post in user_posts %}
+                        <a href="{% url 'post_detail' pk=post.pk %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ post.title }}</h5>
+                                <small class="text-muted">{{ post.created_at|date:"Y-m-d" }}</small>
+                            </div>
+                            <p class="mb-1">{{ post.content|truncatechars:100 }}</p>
+                            <small class="text-muted">좋아요 {{ post.likes.count }}개</small>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">아직 작성한 게시글이 없습니다.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .display-4 {
+        font-size: 2.5rem;
+        font-weight: 300;
+        line-height: 1.2;
+    }
+</style>
+{% endblock %}

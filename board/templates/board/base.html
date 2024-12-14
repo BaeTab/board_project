@@ -37,6 +37,7 @@
             <div class="navbar-nav">
                 {% if user.is_authenticated %}
                     <span class="nav-item nav-link">{{ user.username }}님 환영합니다</span>
+                    <a class="nav-item nav-link" href="{% url 'dashboard' %}">대시보드</a>
                     <a class="nav-item nav-link" href="{% url 'post_new' %}">글쓰기</a>
                     {% if user.username == 'bhwoo48' %}
                         <a class="nav-item nav-link" href="{% url 'admin:index' %}">관리자페이지</a>

@@ -1,0 +1,17 @@
+{% extends 'board/base.html' %}
+
+{% block content %}
+    <h2>{% if form.instance.pk %}게시글 수정{% else %}새 게시글 작성{% endif %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">제목:</label>
+            {{ form.title }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.content.id_for_label }}">내용:</label>
+            {{ form.content }}
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">저장</button>
+    </form>
+{% endblock %}

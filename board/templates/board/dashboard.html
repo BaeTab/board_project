@@ -1,30 +1,30 @@
 {% extends 'board/base.html' %}
 
 {% block content %}
-<div class="container py-4">
-    <h1 class="mb-4">{{ user.username }}님의 대시보드</h1>
+<div class="container-fluid py-4">
+    <h1 class="mb-4 text-center">{{ user.username }}님의 대시보드</h1>
 
     <!-- 통계 카드 -->
     <div class="row mb-4">
-        <div class="col-md-4">
+        <div class="col-12 col-md-4 mb-3 mb-md-0">
             <div class="card bg-primary text-white">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <h5 class="card-title">받은 좋아요</h5>
                     <p class="card-text display-4">{{ total_likes }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-12 col-md-4 mb-3 mb-md-0">
             <div class="card bg-success text-white">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <h5 class="card-title">작성한 댓글</h5>
                     <p class="card-text display-4">{{ user_comments }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-12 col-md-4">
             <div class="card bg-info text-white">
-                <div class="card-body">
+                <div class="card-body text-center">
                     <h5 class="card-title">전체 게시글</h5>
                     <p class="card-text display-4">{{ total_posts }}</p>
                 </div>
@@ -42,7 +42,7 @@
                 <div class="list-group">
                     {% for post in user_posts %}
                         <a href="{% url 'post_detail' pk=post.pk %}" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
+                            <div class="d-flex flex-column flex-md-row w-100 justify-content-between">
                                 <h5 class="mb-1">{{ post.title }}</h5>
                                 <small class="text-muted">{{ post.created_at|date:"Y-m-d" }}</small>
                             </div>
@@ -52,13 +52,21 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="text-muted">아직 작성한 게시글이 없습니다.</p>
+                <p class="text-muted text-center">아직 작성한 게시글이 없습니다.</p>
             {% endif %}
         </div>
     </div>
 </div>
 
 <style>
+    @media (max-width: 768px) {
+        .display-4 {
+            font-size: 2rem;
+        }
+        .card-body {
+            padding: 1rem;
+        }
+    }
     .card {
         transition: transform 0.2s;
     }
